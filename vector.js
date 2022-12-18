@@ -1,3 +1,7 @@
+//ROUND TO ZERO: fromAngle, rotate2D
+//issues if magnitude is less than 1: normalize, limit, setMag
+//Some static are also implemented as instance unnecessarily
+
 class Vector {
 
     //CONSTRUCTORS
@@ -12,51 +16,31 @@ class Vector {
         vec.y = Math.sin(angle);
         vec.setMag(mag);
         return vec;
-        // if (typeof v !== "object") {
-        //     v = new Vector();
-        // }
-        // v.x = Math.cos(angle);
-        // v.y = Math.sin(angle);
-        // return v;
-    }//ROUND TO ZERO
+    }
     static random2D(mag=1) {
         return Vector.fromAngle(Math.random() * (Math.PI*2), mag);
     }
     static random3D = function (mag=1) {
-        //random angle
         var angle = Math.random() * 365;
-        //random z value(I think lol)
         var vz = Math.random() * 2 - 1;
-        //mag is radius(C), vz is z componentm pythag, so mag stays same with z value and x/y values
         var mult = Math.sqrt(mag*mag - vz * vz);
-        //find x and y for angle
         var vx = mult * Math.cos(angle);
         var vy = mult * Math.sin(angle);
-        // if (v === undefined || v === null) {
-            v = new Vector(vx, vy, vz);
-        // } else {
-        //     v.set(vx, vy, vz);
-        // }
+        v = new Vector(vx, vy, vz);
         return v;
     }
-
-    // IMPLEMENT
-    toMat(){}
-    fromMat(){}
-
-
+    
     // INSTANCE METHODS
     copy() {
         return new Vector(this.x, this.y, this.z);
     }
     // ARITHMETIC
     add(x, y , z = 0) {
-        //if only a vector is passed in, get its parts
         if (arguments.length === 1&&typeof x === "object") {
             this.x += x.x;
             this.y += x.y;
             this.z += x.z;
-        } else if (arguments.length > 1) {//if numbers are passed in, add them
+        } else if (arguments.length > 1) {
             this.x += x;
             this.y += y;
             this.z += z;
@@ -96,7 +80,7 @@ class Vector {
     }
     cross(v) {
         return new Vector(this.y * v.z - v.y * this.z, this.z * v.x - v.z * this.x, this.x * v.y - v.x * this.y);
-    }//target
+    }
 
     //SET PROPERTIES
     normalize() {
@@ -104,7 +88,7 @@ class Vector {
         if (m !== 0) {//m>0
             this.div(m);
         }
-    }//target
+    }
     limit(max) {
         if (this.mag() > max) {
             this.normalize();
@@ -116,11 +100,6 @@ class Vector {
     }
     set(x, y, z=0) {
         switch (typeof x) {
-            // case "array":
-            //     this.x = x[0];
-            //     this.y = x[1];
-            //     this.z = x[2];
-            // break;
             case "object":
                 this.x = x.x;
                 this.y = x.y;
@@ -130,17 +109,8 @@ class Vector {
                 this.x = x;
                 this.y = y;
                 this.z = z;
-                // If no z specified, go to zero
-                // this.z = z|this.z;
             break;
         }
-
-        //option 2
-        // this.x=x;
-        // this.y=y;
-        // if(arguments.length>2){
-        //     this.z=z;
-        // }
     }
 
     setMag(mag) {
@@ -149,12 +119,12 @@ class Vector {
         if(mag<1){//might be able to fix with normalizing, then div with x
             console.warn("Trying to set to magnitude less than one");
         }
-    }//target
+    }
     rotate2D(theta) {
         let angle = Math.atan2(this.y, this.x);
         this.x = Math.cos(theta*this.x) - Math.sin(theta*this.y);
         this.y = Math.sin(theta*this.x) + Math.cos(theta*this.y);
-    }//FIX ROUNDING, 0 not huge neg exponent
+    }
     lerp(vec, amt) {
         let lerp = function (start, stop, amt) {
             return start + (stop - start) * amt;
@@ -162,7 +132,7 @@ class Vector {
         this.x = lerp(this.x, vec.x, amt);
         this.y = lerp(this.y, vec.y, amt);
         this.z = lerp(this.z, vec.z, amt);
-    }//static
+    }
 
     //GET PROPERTIES
     dist(x, y, z = 0) {
@@ -183,7 +153,7 @@ class Vector {
     }
     angleBetween(vec) {
         return Math.abs(Math.atan2(this.y, this.x) - Math.atan2(vec.y, vec.x));
-    }//only static, idk why this is here
+    }
     magSq() {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
@@ -193,7 +163,8 @@ class Vector {
     array() {
         return [this.x, this.y, this.z];
     }
-    //Static methods
+    
+    //STATIC METHODS
     static add(v1, v2) {
         let vec = v1.copy();
         vec.add(v2);
@@ -249,6 +220,4 @@ class Vector {
     static dot(v1, v2) {
         return v1.dot(v2)
     }
-    
-
 }
